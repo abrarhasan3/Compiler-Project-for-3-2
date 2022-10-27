@@ -1,7 +1,7 @@
 %%
 "#import" {printf("#include ");}
 "#porichoy_dao" {printf("#define ");}
-"var_"[A-Z|a-z]+[0-9]* {printf("variable ");}
+"var_"[A-Z|a-z]+[0-9]* {printf("(variable) %s",yytext);}
 
 "ret" {printf("return ");}
 
@@ -21,12 +21,14 @@
 "@"  {printf("= ");}
 "["  {printf("{ ");}
 "]"  {printf("} ");}
-"nil"   {printf("nil ");}
+"<" {printf("( ");}
+">" {printf(") ");}
+"nil"   {printf("void ");}
 
 openthis {printf("freopen ");}
 closethis {printf("fclose ");}
 "(+)"  {printf("&& ");}
-"!>"  {printf("&& ");}
+
 go {printf("continue ");}
 ber_ho {printf("break");}
 fixed {printf("static");}
@@ -40,13 +42,23 @@ or  {printf("||");}
 struct {printf("udclass");}
 fullsize {printf("sizeof");}
 
-"ptr("[A-Z|a-z]+[0-9]*")" {printf("Pointer");}
-("!>*").*"*<!" {printf("Comment");}
+"ptr(var_"[A-Z|a-z]+[0-9]*")" {printf("Pointer Variable");}
+("!>*")(.*|\n)"*<!" {printf("Comment");}
+"!>".  {printf("// ");}
 
 jodi {printf("If");}
 nahole {printf("elseif");}
 lastly {printf("else");}
-. 
+
+"$" {printf("&");}
+"=" {printf("==");}
+"(" {printf("<");}
+")" {printf(">");}
+"|" {printf(";");}
+
+"udclass" {printf("struct");}
+
+. 	{printf("%s",yytext);}
 %%
 int yywrap()
 {
@@ -55,6 +67,8 @@ int yywrap()
 
 int main()
 {
+	yyin = freopen("input.txt", "r",stdin);
+	yyout = freopen("output.txt","w",stdout);
 	yylex();
 	return 0;
 }

@@ -1,0 +1,59 @@
+#import(stdio.h)
+#porichoy_dao pi 3.1416
+
+udclass AB [
+	number var_structvar |
+	fixed number var_flag |
+]
+nil sum < number var_v1, number var_v2, number var_op>
+[
+	
+	longnumber var_result |
+	jodi<var_op = 1>
+	[
+		var_result @ var_v1 add var_v2|
+	]
+	nahole<var_op = 2>
+	[
+		var_result @ var_v1 sub var_v2|
+	]
+	nahole<var_op = 3>
+	[
+		var_result @ var_v1 mul var_v2|
+	]
+	lastly
+	[
+		var_result @ var_v1 div var_v2|
+	]
+	ret var_result|
+
+number main <>
+[
+	number var_a1, var_b1|
+	longnumber var_ll1|
+	numdes var_f1|
+	doublenumdes var_d1|
+	
+	loopfor<var_a1=0|var_a1%%10|var_a1 inc>
+	[
+		ber_ho|	
+	]
+	obtain<var_f1>
+	loop<var_f1$$10>
+	[
+		jodi<var_f1 = 6>
+		[
+			go|
+		]
+		nahole<var_f1 = 9>
+		[
+			speak<var_f1>
+		]
+		var_f1 dec|				
+	]
+	number ptr(var_ab)|
+	var_ab @ $var_b1|
+!> This is Comment
+
+	number var_size @ fullsize<number>| 	
+]

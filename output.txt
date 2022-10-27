@@ -1,0 +1,59 @@
+#include <stdio.h>
+#define  pi 3.1416
+
+struct AB { 
+	int  (variable) var_structvar ;
+	static int  (variable) var_flag ;
+} 
+void  sum (  int  (variable) var_v1, int  (variable) var_v2, int  (variable) var_op) 
+{ 
+	
+	long  (variable) var_result ;
+	If( (variable) var_op == 1) 
+	{ 
+		(variable) var_result =  (variable) var_v1 + (variable) var_v2;
+	} 
+	elseif( (variable) var_op == 2) 
+	{ 
+		(variable) var_result =  (variable) var_v1 - (variable) var_v2;
+	} 
+	elseif( (variable) var_op == 3) 
+	{ 
+		(variable) var_result =  (variable) var_v1 * (variable) var_v2;
+	} 
+	else
+	{ 
+		(variable) var_result =  (variable) var_v1 / (variable) var_v2;
+	} 
+	return  (variable) var_result|
+
+int  main ( ) 
+{ 
+	int  (variable) var_a1, (variable) var_b1;
+	long  (variable) var_ll1;
+	float  (variable) var_f1;
+	double  (variable) var_d1;
+	
+	for
+	{ 
+		break;	
+	} 
+	scanf 
+	while
+	{ 
+		If( (variable) var_f1 == 6) 
+		{ 
+			continue ;
+		} 
+		elseif( (variable) var_f1 == 9) 
+		{ 
+			printf 
+		} 
+		(variable) var_f1 --;				
+	} 
+	int  Pointer Variable;
+	(variable) var_ab =  &(variable) var_b1;
+// This is Comment
+
+	int  (variable) var_size =  sizeof( int ) ; 	
+} 
