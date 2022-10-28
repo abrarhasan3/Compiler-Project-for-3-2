@@ -1,35 +1,43 @@
+%{
+#include<string.h>
+%}
 %%
-"#import" {printf("#include ");}
-"#porichoy_dao" {printf("#define ");}
-"var_"[A-Z|a-z]+[0-9]* {printf("(variable) %s",yytext);}
+"#import" {printf("#include");}
+"#porichoy_dao" {printf("#define");}
+"var_"[A-Z|a-z]+[0-9]* {for(int i=4;i<strlen(yytext);i++)
+				{ 
+					printf("%c", yytext[i]);
+				}
+				}
 
-"ret" {printf("return ");}
+"ret" {printf("return");}
 
-"number" {printf("int ");}
-"longnumber" {printf("long ");}
-"numdes" {printf("float ");}
-"doublenumdes" {printf("double ");}
+"number" {printf("int");}
+"longnumber" {printf("long");}
+"numdes" {printf("float");}
+"doublenumdes" {printf("double");}
 
-"speak<""var_"[A-Z|a-z|0-9]+">" {printf("printf ");}
-"obtain<""var_"[A-Z|a-z]+[0-9]*">" {printf("scanf ");}
+"speak" {printf("printf");}
+"obtain" {printf("scanf");}
 ";" {printf("|");}
-"loopfor<""var_"[A-Z|a-z]+[0-9]*"="[0-9]+"|""var_"[A-Z|a-z]+[0-9]*(@|$$|%%)[0-9]+"|""var_"[A-Z|a-z]+[0-9]*(" inc"|" dec")">" {printf("for");}
-"loop<""var_"[A-Z|a-z]+[0-9]*(@|$$|%%)[0-9]+">" {printf("while");}
-"start[""]""while<""var_"[A-Z|a-z]+[0-9]*(@|$$|%%)[0-9]+">" {printf("do...while ");}
-"$$" {printf("> ");}
-"%%" {printf("< ");}
-"@"  {printf("= ");}
-"["  {printf("{ ");}
-"]"  {printf("} ");}
-"<" {printf("( ");}
-">" {printf(") ");}
-"nil"   {printf("void ");}
+"loopfor" {printf("for");}
+"loop" {printf("while");}
+"start" {printf("do");}
+"while" {printf("while");}
+"$$" {printf(">");}
+"%%" {printf("<");}
+"@"  {printf("=");}
+"["  {printf("{");}
+"]"  {printf("}");}
+"<" {printf("(");}
+">" {printf(")");}
+"nil"   {printf("void");}
 
-openthis {printf("freopen ");}
-closethis {printf("fclose ");}
-"(+)"  {printf("&& ");}
+openthis {printf("freopen");}
+closethis {printf("fclose");}
+"(+)"  {printf("&&");}
 
-go {printf("continue ");}
+go {printf("continue");}
 ber_ho {printf("break");}
 fixed {printf("static");}
 add {printf("+");}
@@ -42,9 +50,9 @@ or  {printf("||");}
 struct {printf("udclass");}
 fullsize {printf("sizeof");}
 
-"ptr(var_"[A-Z|a-z]+[0-9]*")" {printf("Pointer Variable");}
+"ptr " {printf("*");}
 ("!>*")(.*|\n)"*<!" {printf("Comment");}
-"!>".  {printf("// ");}
+"!>".  {printf("//");}
 
 jodi {printf("If");}
 nahole {printf("elseif");}
