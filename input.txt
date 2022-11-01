@@ -25,7 +25,7 @@ nil sum < number var_v1, number var_v2, number var_op>
 	[
 		var_result @ var_v1 div var_v2|
 	]
-	ret var_result|
+	ret var_result |
 
 number main <>
 [
@@ -33,6 +33,8 @@ number main <>
 	longnumber var_ll1|
 	numdes var_f1|
 	doublenumdes var_d1|
+	
+	borno var_arr{100}|
 	
 	loopfor<var_a1@0|var_a1%%10|var_a1 inc>
 	[
@@ -52,8 +54,24 @@ number main <>
 		var_f1 dec|				
 	]
 	number ptr var_ab |
+	
+	var_a1 = root<16>|
+	var_a1 = power<2,16>|
 	var_ab @ $var_b1|
-!> This is Comment
+! This is Comment
+!>This isLine1
 
-	number var_size @ fullsize<number>| 	
+Comment Line 2<!
+
+	number var_size @ fullsize<number>|
+sw <var_ab>
+	ca 1:
+		speak<"ONE">|
+		ber_ho|
+	ca 2:
+		speak<"Two">|
+		ber_ho|
+	def:
+		speak<"Default">|
+		 	
 ]

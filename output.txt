@@ -25,7 +25,7 @@ void sum ( int v1, int v2, int op)
 	{
 		result = v1 / v2;
 	}
-	return result|
+	return result ;
 
 int main ()
 {
@@ -33,6 +33,8 @@ int main ()
 	long ll1;
 	float f1;
 	double d1;
+	
+	char arr[100];
 	
 	for(a1=0;a1<10;a1 ++)
 	{
@@ -52,8 +54,24 @@ int main ()
 		f1 --;				
 	}
 	int *ab ;
+	
+	a1 == sqrt(16);
+	a1 == pow(2,16);
 	ab = &b1;
 //This is Comment
+/*This isLine1
 
-	int size = sizeof(int); 	
+Comment Line 2*/
+
+	int size = sizeof(int);
+switch (ab)
+	case 1:
+		printf("ONE");
+		break;
+	case 2:
+		printf("Two");
+		break;
+	Default:
+		printf("Default");
+		 	
 }

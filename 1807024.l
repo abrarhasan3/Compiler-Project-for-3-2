@@ -12,10 +12,12 @@
 
 "ret" {printf("return");}
 
+
 "number" {printf("int");}
 "longnumber" {printf("long");}
 "numdes" {printf("float");}
 "doublenumdes" {printf("double");}
+"borno" {printf("char");}
 
 "speak" {printf("printf");}
 "obtain" {printf("scanf");}
@@ -51,18 +53,40 @@ struct {printf("udclass");}
 fullsize {printf("sizeof");}
 
 "ptr " {printf("*");}
-("!>*")(.*|\n)"*<!" {printf("Comment");}
-"!>".  {printf("//");}
+"!>" {
+	printf("%s", "/*");
+	char z = input();
+	while(z!='<'){
+		printf("%c", z);
+		z=input();
+	}
+	printf("%c", '*');
+	z=input();
+	if(z=='!'){
+		printf("%c",'/');
+		}
+	}
+"!".  {printf("//");}
 
 jodi {printf("If");}
 nahole {printf("elseif");}
 lastly {printf("else");}
 
+
+"root" {printf("sqrt");}
+"power" {printf("pow");}
 "$" {printf("&");}
 "=" {printf("==");}
 "(" {printf("<");}
 ")" {printf(">");}
 "|" {printf(";");}
+"~" {printf("!");}
+"{" {printf("[");}
+"}" {printf("]");}
+
+"sw" {printf("switch");}
+"ca" {printf("case");}
+"def" {printf("Default");} 
 
 "udclass" {printf("struct");}
 
