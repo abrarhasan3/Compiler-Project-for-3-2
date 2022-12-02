@@ -1,0 +1,4 @@
+number var_a , var_b |
+numdes var_ab, var_c |
+borno var_abc |
+var_a @ 12 |

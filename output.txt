@@ -1,77 +1,15 @@
-#include<stdio.h>
-#define pi 3.1416
+    in_int: 2
+var_a
+var_b
 
-struct AB {
-	int structvar ;
-	static int flag ;
-}
-void sum ( int v1, int v2, int op)
-{
-	
-	long result ;
-	If(op == 1)
-	{
-		result = v1 + v2;
-	}
-	elseif(op == 2)
-	{
-		result = v1 - v2;
-	}
-	elseif(op == 3)
-	{
-		result = v1 * v2;
-	}
-	else
-	{
-		result = v1 / v2;
-	}
-	return result ;
+   f: 2
+Valid: 0
+var_ab
+Valid: 0
+var_c
 
-int main ()
-{
-	int a1, b1;
-	long ll1;
-	float f1;
-	double d1;
-	
-	char arr[100];
-	
-	for(a1=0;a1<10;a1 ++)
-	{
-		break;	
-	}
-	scanf(f1)
-	while(f1>10)
-	{
-		If(f1 == 6)
-		{
-			continue;
-		}
-		elseif(f1 == 9)
-		{
-			printf(f1)
-		}
-		f1 --;				
-	}
-	int *ab ;
-	
-	a1 == sqrt(16);
-	a1 == pow(2,16);
-	ab = &b1;
-//This is Comment
-/*This isLine1
+  C: 1
+Valid: 0
+var_abc
 
-Comment Line 2*/
-
-	int size = sizeof(int);
-switch (ab)
-	case 1:
-		printf("ONE");
-		break;
-	case 2:
-		printf("Two");
-		break;
-	Default:
-		printf("Default");
-		 	
-}
+   1
