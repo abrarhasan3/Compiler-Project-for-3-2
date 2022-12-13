@@ -1,4 +1,11 @@
-number var_a , var_b |
-numdes var_ab, var_c |
-borno var_abc |
-var_a @ 12 |
+number var_a |
+
+var_a @ 12 mul 10 |
+
+var_a dec |
+
+
+jodi < 3 %% 10 >
+[
+	var_a @ 12 mul 12 |
+]

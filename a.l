@@ -1,7 +1,8 @@
 %{
 #include<string.h>
-#include "1807024.tab.h"
+#include "a.tab.h"
 void yyerror(char *);
+int v;
 %}
 %%
 "#import" {printf("#include");}
@@ -9,10 +10,26 @@ void yyerror(char *);
 "var_"[A-Z|a-z]+[0-9]* {
 						yylval.string=strdup(yytext);
 						return ID;}
-[0-9]+			{
-					yylval.number= atoi(yytext);
-					return NUM;
+[0-9]+(".")[0-9]+	{
+					yylval.f_number= strtod(yytext, NULL);
+					//printf("%s\n ", yytext);
+					return FL;
 				}
+[0-9]+			{
+					yylval.number = atoi(yytext);
+					return NUM;
+
+				}
+":"[A-Z]*[a-z]*":" {
+						char temp[2000],temp2[2000];
+						int i=1,j;
+						sscanf( yytext, ":%s", temp );
+						for(i=0;temp[i]!= '\0';i++)
+							;
+						temp[i-1]='\0';
+						yylval.string = temp;
+						return CHAR;
+					}
 "ret" {printf("return");}
 
 
@@ -22,19 +39,24 @@ void yyerror(char *);
 "doublenumdes" {printf("double");}
 "borno" {return CHAR;}
 
-"speak" {printf("printf");}
-"obtain" {printf("scanf");}
+"speak" {return PRINT;}
+"obtain" {	
+			scanf("%d", &v);
+			printf("%d", v);
+			//return SCAN;
+		}
 "loopfor" {printf("for");}
 "loop" {printf("while");}
 "start" {printf("do");}
 "while" {printf("while");}
-"$$" {printf(">");}
-"%%" {printf("<");}
+"$$" {return GT;}
+"%%" {return LT;}
+"=" {return EQU;}
 "@"  {return ASSIGN;}
-"["  {printf("{");}
-"]"  {printf("}");}
-"<" {printf("(");}
-">" {printf(")");}
+"["  {return LSBRACKET;}
+"]"  {return RSBRACKET;}
+"<" {return LAB;}
+">" {return RAB;}
 "nil"   {printf("void");}
 
 openthis {printf("freopen");}
@@ -44,12 +66,12 @@ closethis {printf("fclose");}
 go {printf("continue");}
 ber_ho {printf("break");}
 fixed {printf("static");}
-add {;}
-sub {printf("-");}
-mul {printf("*");}
-div {printf("/");}
-inc {printf("++");}
-dec {printf("--");}
+add {return ADD;}
+sub {return SUB;}
+mul {return MUL;}
+div {return DIV;}
+inc {return INC;}
+dec {return DEC;}
 or  {printf("||");}
 struct {printf("udclass");}
 fullsize {printf("sizeof");}
@@ -70,21 +92,18 @@ fullsize {printf("sizeof");}
 	}
 "!".  {printf("//");}
 
-jodi {printf("If");}
-nahole {printf("elseif");}
-lastly {printf("else");}
+jodi {return IF;}
+nahole {return ELIF ;}
+lastly {return ELSE;}
 
 
-"root" {printf("sqrt");}
+"root" {return ROOT;}
 "power" {printf("pow");}
 "$" {printf("&");}
-"=" {printf("==");}
-"(" {printf("<");}
-")" {printf(">");}
+
+
 "|" {return END;}
 "~" {printf("!");}
-"{" {printf("[");}
-"}" {printf("]");}
 ","	{return COMMA;}
 
 "sw" {printf("switch");}
@@ -93,7 +112,7 @@ lastly {printf("else");}
 
 "udclass" {printf("struct");}
 
-. 	{printf("%s",yytext);}
+. 	
 %%
 int yywrap()
 {
