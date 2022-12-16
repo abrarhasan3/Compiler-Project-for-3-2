@@ -45,8 +45,8 @@ int v;
 			printf("%d", v);
 			//return SCAN;
 		}
-"loopfor" {printf("for");}
-"loop" {printf("while");}
+"loopfor" {return FOR;}
+"loop" {return WHILE;}
 "start" {printf("do");}
 "while" {printf("while");}
 "$$" {return GT;}

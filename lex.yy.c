@@ -829,12 +829,12 @@ YY_RULE_SETUP
 case 15:
 YY_RULE_SETUP
 #line 48 "a.l"
-{printf("for");}
+{return FOR;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 49 "a.l"
-{printf("while");}
+{return WHILE;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP

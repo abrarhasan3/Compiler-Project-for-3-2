@@ -1,11 +1,10 @@
-number var_a |
+number var_d , var_e , var_a |
+numdes var_bb, var_b |
+var_b @ 12 mul 10.1 |
 
-var_a @ 12 mul 10 |
-
-var_a dec |
-
-
-jodi < 3 %% 10 >
+jodi < 3 %% 4 >
 [
-	var_a @ 12 mul 12 |
+		var_b @ 12 add 10.1 |
+		speak<var_b>|
 ]
+speak<var_b>|

@@ -57,16 +57,19 @@
      RSBRACKET = 273,
      ELIF = 274,
      ELSE = 275,
-     DIV = 276,
-     MUL = 277,
-     SUB = 278,
-     ADD = 279,
-     FL = 280,
-     ROOT = 281,
-     NUM = 282,
-     ID = 283,
-     CHAR = 284,
-     END = 285
+     WHILE = 276,
+     FOR = 277,
+     STMNT1 = 278,
+     DIV = 279,
+     MUL = 280,
+     SUB = 281,
+     ADD = 282,
+     FL = 283,
+     ROOT = 284,
+     NUM = 285,
+     ID = 286,
+     CHAR = 287,
+     END = 288
    };
 #endif
 
@@ -77,7 +80,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 41 "a.y"
+#line 64 "a.y"
 
         int number;
         char *string;
@@ -86,12 +89,20 @@ typedef union YYSTYPE
         	int num;
         	char *str;
         	float f_num;        
-		}next;        
+		}next;
+		struct {
+			int num;
+			float f_num;
+			char *str;
+			int datatype;
+			int operation;
+			int indx;
+		}sup;        
 
 
 
 /* Line 1676 of yacc.c  */
-#line 95 "a.tab.h"
+#line 106 "a.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
