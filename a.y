@@ -35,8 +35,11 @@ struct f_if{
 			int datatype;
 			int operation;
 			int indx;
-		}arr_if[100];
+		}arr_if[100],var_switch,func[100];
 int index_if;
+int is_executed;
+int index_func;
+
 struct var_for{
 	char name[100];
 	int index;
@@ -80,22 +83,23 @@ int for_id_index;
 		}sup;        
 }
 
-%token FLOAT INT COMMA ASSIGN PRINT RAB LAB SCAN INC DEC IF GT LT EQU LSBRACKET RSBRACKET ELIF ELSE WHILE FOR STMNT1
-%left MUL DIV 
+%token FLOAT INT COMMA ASSIGN PRINT RAB LAB SCAN INC DEC IF GT LT EQU LSBRACKET RSBRACKET ELIF ELSE WHILE FOR STMNT1 SWITCH CASE DEFAULT MAIN FUNC
+%left MUL DIV CALL INCLUDE
 %left ADD SUB 
 %token <f_number> FL ROOT
 %token<number> NUM 
 %token<string>	ID 
-%token<string>	CHAR 
+%token<string>	CHAR CHAR1
 %token END
-%type<number>EXPR_1 
+%type<number>EXPR_1 BASE_CONTD CASE_CONTD OP_FOR
 %type<next> LOGICAL_OP
-%type<sup>STMNT	OP1	EXPR_i	TERM_i FACTOR_i 
+%type<sup>STMNT	OP1 EXPR_i TERM_i FACTOR_i CASE_INTERN 
 
 %%
 
+PR 	: INCLUDE INT MAIN LSBRACKET PROGRAM RSBRACKET
 PROGRAM : STATEMENT PROGRAM 
-		|;
+	|;
 STATEMENT: 
 		INT ID1 END 				
 		|FLOAT ID2 END	
@@ -132,7 +136,7 @@ STATEMENT:
 								}
 
 							}
-		|ID ASSIGN CHAR END	{
+		|ID ASSIGN CHAR1 END	{
 								f_index = -1;
 								int t;
 								if(find_c(store_char,$1,c) == 1)
@@ -168,6 +172,7 @@ STATEMENT:
 								
 
 							}
+		
 		|ID ASSIGN EXPR_i END	{
 									
 									if(find_i(store_int,$1,in_int)==1)
@@ -240,8 +245,17 @@ STATEMENT:
 		|ROOT LAB NUM RAB END 	{
 											printf("%f",sqrt($3));
 								}
-		|IF LAB LOGICAL_OP RAB LSBRACKET STMNT RSBRACKET{
-									if($3.num == 1)
+		|IFSTMNT
+		|LOOPSTMNT
+		|SWITCH_STMNT
+		|FUNCTION
+		|CALL_FUNC
+
+
+
+IFSTMNT:
+	IF LAB LOGICAL_OP RAB LSBRACKET STMNT RSBRACKET{
+								if($3.num == 1)
 									{
 										int i;
 										for(i=0;i<index_if;i++)
@@ -249,10 +263,10 @@ STATEMENT:
 												if(arr_if[i].operation == 1 )
 												{
 													if(arr_if[i].datatype == 1)
-														printf("%d",store_int[arr_if[i].indx].value);
+														printf("%d\n",store_int[arr_if[i].indx].value);
 													else if(arr_if[i].datatype == 2)
 													{
-														printf("%f",store_float[arr_if[i].indx].value);
+														printf("%f\n",store_float[arr_if[i].indx].value);
 													}
 												}
 												else if (arr_if[i].operation == 2)
@@ -277,6 +291,11 @@ STATEMENT:
 													}
 
 											}
+											arr_if[i].operation=0;
+											arr_if[i].datatype=0;
+											arr_if[i].indx=-1;
+											arr_if[i].num = 0;
+											arr_if[i].f_num = 0;
 										}
 										index_if=0;
 										
@@ -288,132 +307,199 @@ STATEMENT:
 									if($3.num == 1)
 									{
 										int i;
-
-										if($6.operation == 1 )
-											{
-												if($6.datatype = 1)
-													printf("%d",$6.num);
-												else if($6.datatype == 2)
-												{
-													printf("%f",$6.f_num);
-												}
-											}
-										else if ($6.operation == 2)
+										for(i=0;i<index_if;i++)
 										{
-											if($6.indx	!= -1)
+											if(arr_if[i].operation == 1 )
 											{
-												if($6.datatype == 1)
+												if(arr_if[i].datatype == 1)
+													printf("%d\n",store_int[arr_if[i].indx].value);
+												else if(arr_if[i].datatype == 2)
 												{
-													store_int[$6.indx].value=(int)$6.num;
-													store_int[$6.indx].valid=1;
+													printf("%f\n",store_float[arr_if[i].indx].value);
 												}
-												else if($6.datatype==2)
-												{
-													store_float[$6.indx].value=$6.f_num;
-													store_float[$6.indx].valid=1;
-												}											
 											}
-											else
+											else if (arr_if[i].operation == 2)
 											{
-												printf("Variable is not Declared");
+												if(arr_if[i].indx	!= -1)
+												{
+													if(arr_if[i].datatype == 1)
+													{
+														store_int[arr_if[i].indx].value=(int)arr_if[i].num;
+														store_int[arr_if[i].indx].valid=1;
+													}
+													else if(arr_if[i].datatype==2)
+													{
+														store_float[arr_if[i].indx].value=arr_if[i].f_num;
+														store_float[arr_if[i].indx].valid=1;
+													}											
+												}
+												else
+												{
+													printf("Variable is not Declared");
+												}
+
 											}
+											arr_if[i].operation=0;
+											arr_if[i].datatype=0;
+											arr_if[i].indx=-1;
+											arr_if[i].num = 0;
+											arr_if[i].f_num = 0;
 
 										}
-
+										index_if=0;
 									}
 									else if($10.num == 1)
 									{
-										if($13.operation == 1 )
-											{
-												if($13.datatype = 1)
-													printf("%d",$13.num);
-												else if($13.datatype = 2)
-													printf("%f",$13.f_num);
-											}
-										else if ($13.operation == 2)
-										{
-											if($13.indx	!= -1)
-											{
-												if($13.datatype == 1)
-												{
-													store_int[$13.indx].value=(int)$13.num;
-													store_int[$13.indx].valid=1;
-												}
-												else if($13.datatype==2)
-												{
-													store_float[$13.indx].value=$13.f_num;
-													store_float[$13.indx].valid=1;
-												}
-											
-											}
-											else
-											{
-												printf("Variable is not Declared");
-											}
 
+										int i;
+										for(i=$6.num;i<$13.num;i++)
+										{
+											if(arr_if[i].operation == 1 )
+											{
+												if(arr_if[i].datatype == 1)
+												{
+													printf("%d\n",store_int[arr_if[i].indx].value);
+												}
+												else if(arr_if[i].datatype == 2)
+												{
+														printf("%f\n",store_float[arr_if[i].indx].value);
+												}
+											}
+											else if (arr_if[i].operation == 2)
+											{
+												if(arr_if[i].indx	!= -1)
+												{
+													if(arr_if[i].datatype == 1)
+													{
+														store_int[arr_if[i].indx].value=(int)arr_if[i].num;
+														store_int[arr_if[i].indx].valid=1;
+													}
+													else if(arr_if[i].datatype==2)
+													{
+														store_float[arr_if[i].indx].value=arr_if[i].f_num;
+														store_float[arr_if[i].indx].valid=1;
+													}
+												
+												}
+												else
+												{
+													printf("Variable is not Declared");
+												}
+
+											}
+											arr_if[i].operation=0;
+											arr_if[i].datatype=0;
+											arr_if[i].indx=-1;
+											arr_if[i].num = 0;
+											arr_if[i].f_num = 0;
 										}
+										index_if=0;
 									}
 									else
 									{
-										if($17.operation == 1 )
-											{
-												if($17.datatype = 1)
-													printf("%d",$17.num);
-												else if($17.datatype = 2)
-													printf("%f",$17.f_num);
-											}
-										else if ($17.operation == 2)
-										{
-											if($17.indx	!= -1)
-											{
-												if($13.datatype == 1)
-												{
-													store_int[$17.indx].value=(int)$17.num;
-													store_int[$17.indx].valid=1;
-												}
-												else if($17.datatype==2)
-												{
-													store_float[$17.indx].value=$17.f_num;
-													store_float[$17.indx].valid=1;
-												}
-											
-											}
-											else
-											{
-												printf("Variable is not Declared");
-											}
+										int i;
 
+										for(i=$13.num;i<$17.num;i++)
+										{
+											if(arr_if[i].operation == 1 )
+												{
+													if(arr_if[i].datatype == 1)
+													{
+														printf("%d\n",store_int[arr_if[i].indx].value);
+													}
+													else if(arr_if[i].datatype == 2)
+													{
+														printf("%f\n",store_float[arr_if[i].indx].value);
+													}
+												}
+											else if (arr_if[i].operation == 2)
+											{
+												if(arr_if[i].indx	!= -1)
+												{
+													if(arr_if[i].datatype == 1)
+													{
+														store_int[arr_if[i].indx].value=(int)arr_if[i].num;
+														store_int[arr_if[i].indx].valid=1;
+													}
+													else if(arr_if[i].datatype==2)
+													{
+														store_float[arr_if[i].indx].value=arr_if[i].f_num;
+														store_float[arr_if[i].indx].valid=1;
+													}
+												
+												}
+												else
+												{
+													printf("Variable is not Declared");
+												}
+
+											}
+											arr_if[i].operation=0;
+											arr_if[i].datatype=0;
+											arr_if[i].indx=-1;
+											arr_if[i].num = 0;
+											arr_if[i].f_num = 0;
 										}
+										index_if=0;
 
 									}
 								}
-		|WHILE LAB NUM RAB LSBRACKET STMNT RSBRACKET	{	int i=0;
-																if($6.operation = 1)
-																{
-																	while(i<$3)
-																	{	
-																		//printf("HI\n");
-																		i++;
-																	}
-																}
-															}
-		|FOR LAB ID ASSIGN NUM END ID GT NUM END ID OP1 RAB LSBRACKET F RSBRACKET{
-							
-						
+		;
+LOOPSTMNT:
+
+		WHILE LAB NUM RAB LSBRACKET CASE_INTERN RSBRACKET{
+									int i=0;
+									
+									while(i<$3)
+									{
+										if($6.operation == 1)
+										{
+											if($6.datatype==1)
+											{
+												printf("\n%d\n", store_int[$6.indx].value);
+											}
+											else if($6.datatype==2)
+											{
+												printf("\n%f\n", store_float[$6.indx].value);
+											}
+
+
+										}
+										else if($6.operation == 2)
+										{
+											if($6.datatype == 1)
+											{
+												store_int[$6.indx].value = $6.num;
+											}
+											else
+											{
+												store_float[$6.indx].value = $6.f_num;
+											}
+										}
+										i++;
+
+									}
+
+								}
+		|FOR LAB ID ASSIGN NUM END ID OP_FOR NUM END ID OP1 RAB LSBRACKET F RSBRACKET{
 							if(strcmp($3,$7)==0 )
 							{
-								
 								if(strcmp($3,$11)==0)
 								{
-									
 									find_i(store_int,$3,in_int);
 									int index1= f_index;
+
+									if($8==1){
+
 									for(store_int[index1].value=$5;store_int[index1].value<$9;store_int[index1].value=store_int[index1].value+$12.num)
 									{
 										int i;
 										for(i=0;i<for_id_index;i++)
 										{
 											int ind=F_indx[i].index;
+
+											
+											
 											if(F_indx[i].operation==1)
 											{
 												
@@ -428,24 +514,166 @@ STATEMENT:
 												else if(F_indx[i].datatype==3)
 												{
 																										
-													int i11=0;											
+													int i11=0;		
 													printf("%s\n",store_char[ind].value);
 												}
 											}
-											else
+											else if(F_indx[i].operation==2)
 											{
-
+												if(F_indx[i].index!= -1)
+												{
+													if(F_indx[i].datatype == 1)
+													{
+														store_int[F_indx[i].index].value=(int)F_indx[i].value.num;
+														store_int[F_indx[i].index].valid=1;
+													}
+													else if(F_indx[i].datatype==2)
+													{
+														store_float[F_indx[i].index].value=F_indx[i].value.f_num;
+														store_float[F_indx[i].index].valid=1;
+													}
+												
+												}
+												else
+												{
+													printf("Variable is not Declared");
+												}
 											}
-											F_indx[i].operation=0;
-											F_indx[i].datatype=0;
-											F_indx[i].index=-1;
+											
 										}
+										F_indx[i].operation=0;
+										F_indx[i].datatype=0;
+										F_indx[i].index=-1;
 									}
+								    }
+								    else if($8 == 2)
+								    {
+								    	for(store_int[index1].value=$5;store_int[index1].value>$9;store_int[index1].value=store_int[index1].value+$12.num)
+									{
+										int i;
+										for(i=0;i<for_id_index;i++)
+										{
+											int ind=F_indx[i].index;
+
+											
+											
+											if(F_indx[i].operation==1)
+											{
+												
+												if(F_indx[i].datatype==1)
+												{
+													printf("%d\n",store_int[ind].value);
+												}
+												else if(F_indx[i].datatype==2)
+												{
+													printf("%f\n",store_float[ind].value);
+												}
+												else if(F_indx[i].datatype==3)
+												{
+																										
+													int i11=0;		
+													printf("%s\n",store_char[ind].value);
+												}
+											}
+											else if(F_indx[i].operation==2)
+											{
+												if(F_indx[i].index!= -1)
+												{
+													if(F_indx[i].datatype == 1)
+													{
+														store_int[F_indx[i].index].value=(int)F_indx[i].value.num;
+														store_int[F_indx[i].index].valid=1;
+													}
+													else if(F_indx[i].datatype==2)
+													{
+														store_float[F_indx[i].index].value=F_indx[i].value.f_num;
+														store_float[F_indx[i].index].valid=1;
+													}
+												
+												}
+												else
+												{
+													printf("Variable is not Declared");
+												}
+											}
+											
+										}
+										F_indx[i].operation=0;
+										F_indx[i].datatype=0;
+										F_indx[i].index=-1;
+									}
+
+								    }
+
+
+								    else if($8 == 3)
+								    {
+								    	for(store_int[index1].value=$5;store_int[index1].value!=$9;store_int[index1].value=store_int[index1].value+$12.num)
+									{
+										int i;
+										for(i=0;i<for_id_index;i++)
+										{
+											int ind=F_indx[i].index;
+
+											
+											
+											if(F_indx[i].operation==1)
+											{
+												
+												if(F_indx[i].datatype==1)
+												{
+													printf("%d\n",store_int[ind].value);
+												}
+												else if(F_indx[i].datatype==2)
+												{
+													printf("%f\n",store_float[ind].value);
+												}
+												else if(F_indx[i].datatype==3)
+												{
+																										
+													int i11=0;		
+													printf("%s\n",store_char[ind].value);
+												}
+											}
+											else if(F_indx[i].operation==2)
+											{
+												if(F_indx[i].index!= -1)
+												{
+													if(F_indx[i].datatype == 1)
+													{
+														store_int[F_indx[i].index].value=(int)F_indx[i].value.num;
+														store_int[F_indx[i].index].valid=1;
+													}
+													else if(F_indx[i].datatype==2)
+													{
+														store_float[F_indx[i].index].value=F_indx[i].value.f_num;
+														store_float[F_indx[i].index].valid=1;
+													}
+												
+												}
+												else
+												{
+													printf("Variable is not Declared");
+												}
+											}
+											
+										}
+										F_indx[i].operation=0;
+										F_indx[i].datatype=0;
+										F_indx[i].index=-1;
+									}
+
+								    }
+
 									for_id_index=0;
 								}
 							}
 				}
 		;
+OP_FOR :	GT	{$$=1;}
+		|LT     {$$=2;}
+		|EQU	{$$=3;}
+
 F: 		|
 		F PRINT LAB ID RAB END {
 								F_indx[for_id_index].operation=1;
@@ -471,7 +699,48 @@ F: 		|
 								}
 								strcpy(F_indx[for_id_index++].name,$4);							
 							}
-		|F ID ASSIGN EXPR_i END {printf("%d", $4.num);}
+		|F ID ASSIGN EXPR_i END {
+									F_indx[for_id_index].operation=2;
+									if (find_i(store_int,$2,in_int) == 1)
+									{
+										
+										F_indx[for_id_index].datatype=1;
+										F_indx[for_id_index].index = f_index;
+										if($4.datatype == 1)
+										{
+											F_indx[for_id_index].value.num = (int)$4.num;
+										}
+										else
+										{
+											F_indx[for_id_index].value.num = (int)$4.f_num;
+										}
+									}
+									else if (find_c(store_char,$2,c) == 1){
+										
+											
+											F_indx[for_id_index].datatype=3;
+											F_indx[for_id_index].index = f_index;
+
+											
+										
+									}
+									else if (find_f(store_float,$2,f) == 1){
+										F_indx[for_id_index].datatype=2;
+										F_indx[for_id_index].index = f_index;
+										
+										if($4.datatype == 1)
+										{
+											F_indx[for_id_index].value.f_num = (float)$4.num;
+										}
+										else
+										{
+											F_indx[for_id_index].value.f_num = (float)$4.f_num;
+										}
+										
+									}
+									strcpy(F_indx[for_id_index++].name,$2);
+
+								}
 		
 		;
 OP1 	: INC 		{
@@ -480,7 +749,7 @@ OP1 	: INC 		{
 	
 					}
 		| DEC 		{
-						$$.num = 1;
+						$$.num = -1;
 						$$.operation = 2;
 					}
 		| ADD NUM 	{
@@ -489,7 +758,7 @@ OP1 	: INC 		{
 					
 					}
 		|SUB NUM 	{
-						$$.num = $2;
+						$$.num = -($2);
 						$$.operation = 2;
 					}
 		;
@@ -501,23 +770,25 @@ LOGICAL_OP :
 			;
 STMNT:	
 		|STMNT PRINT LAB ID RAB END	{
-									if (find_i(store_int,$4,in_int) == 1){
-											arr_if[index_if].num = store_int[f_index].value;
-											arr_if[index_if].indx = f_index;
-											arr_if[index_if].datatype = 1;
-											arr_if[index_if++].operation = 1;
+							if (find_i(store_int,$4,in_int) == 1){
+								arr_if[index_if].num = store_int[f_index].value;
+								arr_if[index_if].indx = f_index;
+								arr_if[index_if].datatype = 1;
+								arr_if[index_if++].operation = 1;
+								$$.num=index_if;
 											
-										}
-									else if (find_f(store_float,$4,f) == 1){
-											arr_if[index_if].f_num = store_float[f_index].value;
-											arr_if[index_if].indx = f_index;
-											arr_if[index_if].datatype = 2;
-											arr_if[index_if++].operation = 1;
+							}
+							else if (find_f(store_float,$4,f) == 1){
+								arr_if[index_if].f_num = store_float[f_index].value;
+								arr_if[index_if].indx = f_index;
+								arr_if[index_if].datatype = 2;
+								arr_if[index_if++].operation = 1;
+								$$.num=index_if;
 											
-										}
+							}
 										//printf("Variable Is not Declared 1");
 									
-								}
+						}
 		|STMNT ID ASSIGN EXPR_i END	{
 									f_index = -1;
 									if($4.datatype==1)
@@ -529,12 +800,14 @@ STMNT:
 											arr_if[index_if].num = $4.num;
 											arr_if[index_if].datatype=1;
 											index_if++;
+											$$.num=index_if;
 										}
 										else if(find_f(store_float,$2,f) == 1){
 											arr_if[index_if].indx = f_index;
 											arr_if[index_if].f_num = (float)$4.num;
 											arr_if[index_if].datatype=2;
 											index_if++;
+											$$.num=index_if;
 										}
 
 									}
@@ -547,12 +820,14 @@ STMNT:
 											arr_if[index_if].num =(int)$4.f_num;
 											arr_if[index_if].datatype=1;
 											index_if++;
+											$$.num=index_if;
 										}
 										else if(find_f(store_float,$2,f) == 1){
 											arr_if[index_if].indx = f_index;
 											arr_if[index_if].f_num =	$4.f_num;
 											arr_if[index_if].datatype=2;
 											index_if++;
+											$$.num=index_if;
 										}
 										
 									}
@@ -918,7 +1193,217 @@ ID3 :ID3 COMMA ID {
 
 					
 				}
-	;	 
+	;
+SWITCH_STMNT: 	SWITCH LAB BASE_CONTD RAB CASE_STMNT 
+
+CASE_STMNT:	LEVEL1 DEFAULT LSBRACKET CASE_INTERN RSBRACKET {
+			if(is_executed == 0)
+			{
+				if($4.operation == 1)
+					{
+						if($4.datatype==1)
+						{
+							printf("\n%d\n", store_int[$4.indx].value);
+						}
+						else if($4.datatype==2)
+						{
+							printf("\n%f\n", store_float[$4.indx].value);
+						}
+
+					}
+					else if($4.operation == 2)
+					{
+						if($4.datatype == 1)
+						{
+							store_int[$4.indx].value = $4.num;
+						}
+						else
+						{
+							store_float[$4.indx].value = $4.f_num;
+						}
+					}
+
+				is_executed = 1;
+				
+			}
+		}
+LEVEL1:		
+		|CASE LAB CASE_CONTD RAB  LSBRACKET CASE_INTERN RSBRACKET LEVEL1{
+			if(is_executed == 0)
+			{
+				if(var_switch.num == $3)
+				{
+					if($6.operation == 1)
+					{
+						if($6.datatype==1)
+						{
+							printf("\n%d\n", store_int[$6.indx].value);
+						}
+						else if($6.datatype==2)
+						{
+							printf("\n%f\n", store_float[$6.indx].value);
+						}
+
+					}
+					else if($6.operation == 2)
+					{
+						if($6.datatype == 1)
+						{
+							store_int[$6.indx].value = $6.num;
+						}
+						else
+						{
+							store_float[$6.indx].value = $6.f_num;
+						}
+					}
+
+					is_executed=1;
+
+
+				}
+			}
+		} 	
+		;
+CASE_INTERN : PRINT LAB ID RAB END {
+						$$.operation = 1;
+						if (find_i(store_int,$3,in_int) == 1)
+						{	
+							$$.datatype = 1;
+							$$.indx = f_index;
+
+						}
+						else if (find_f(store_float,$3,f) == 1){
+							$$.datatype = 2;
+							$$.indx = f_index;
+						}
+					}
+		|ID ASSIGN EXPR_i END{
+						$$.operation = 2;
+						if (find_i(store_int,$1,in_int) == 1)
+						{	
+							$$.datatype = 1;
+							$$.indx = f_index;
+							if($3.datatype==1)
+							{
+								$$.num = $3.num;
+							}
+							else if ($3.datatype==2)
+							{
+								$$.num = (int)$3.f_num;
+							}
+						}
+						else if (find_f(store_float,$1,f) == 1){
+							$$.datatype = 2;
+							$$.indx = f_index;
+							if($3.datatype==1)
+							{
+								$$.f_num =(float) $3.num;
+							}
+							else if ($3.datatype==2)
+							{
+								$$.f_num = (float)$3.f_num;
+							}
+
+						}
+							
+
+					}
+
+		;
+CASE_CONTD	:NUM 	{
+				$$=$1;
+				
+			}
+		|ID 	{
+				if(find_i(store_int,$1,in_int) == 1)
+				{
+					$$= store_int[f_index].value;
+				}
+			}
+		;
+BASE_CONTD	:NUM 	{
+				$$=$1;
+				var_switch.num=$1;
+			}
+		|ID 	{
+				if(find_i(store_int,$1,in_int) == 1)
+				{
+					$$= store_int[f_index].value;
+					var_switch.num = store_int[f_index].value;
+				}
+			}
+		;
+
+FUNCTION : INT FUNC ID LAB RAB LSBRACKET CASE_INTERN RSBRACKET	{
+					func[index_func].str=$3;
+					if($7.operation == 1)
+					{
+						if($7.datatype == 1)
+						{
+							func[index_func].num = store_int[$7.indx].value;
+							func[index_func].datatype = 1;
+							func[index_func++].operation = 1;
+						}
+						else if($7.datatype == 2)
+						{
+							func[index_func].f_num = store_float[$7.indx].value;
+							func[index_func].datatype = 2;
+							func[index_func++].operation = 1;
+						}							
+					}
+					else if($7.operation == 2)
+					{
+
+						if($7.datatype == 1)
+						{
+							func[index_func].num = $7.num;
+							func[index_func].datatype = 1;
+							func[index_func].indx = $7.indx;
+							func[index_func++].operation = 2;
+						}
+						else if($7.datatype == 2)
+						{
+							func[index_func].f_num = store_float[$7.indx].value;
+							func[index_func].datatype = 2;
+							func[index_func].indx = $7.indx;
+							func[index_func++].operation = 2;
+						}
+					}
+	
+				}
+		;
+CALL_FUNC: 	CALL LAB ID RAB END {
+			for(int i=0;i<index_func;i++)
+			{
+				if(strcmp($3,func[i].str)==0)
+				{
+					if(func[i].operation == 1)
+					{
+						if(func[i].datatype==1)
+						{
+							printf("%d",func[i].num);
+						}
+						else
+						{
+							printf("%f",func[i].f_num);
+						}
+					}
+					else if(func[i].operation == 2)
+					{
+						if(func[i].datatype==1)
+						{
+							store_int[func[i].indx].value = func[i].num;
+						}
+						else
+						{
+							store_float[func[i].indx].value = func[i].f_num;
+						}
+
+					}
+				}
+			}
+	
+		}
 %%
 
 int find_i(struct var_i *s, char *ch, int n)

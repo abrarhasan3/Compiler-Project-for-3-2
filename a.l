@@ -5,7 +5,7 @@ void yyerror(char *);
 int v;
 %}
 %%
-"#import" {printf("#include");}
+"#import<stdio.h>" {return INCLUDE;}
 "#porichoy_dao" {printf("#define");}
 "var_"[A-Z|a-z]+[0-9]* {
 						yylval.string=strdup(yytext);
@@ -28,17 +28,15 @@ int v;
 							;
 						temp[i-1]='\0';
 						yylval.string = temp;
-						return CHAR;
+						return CHAR1;
 					}
 "ret" {printf("return");}
 
 
+"main" 	{return MAIN;}
 "number" {return INT;}
-"longnumber" {printf("long");}
 "numdes" {return FLOAT;}
-"doublenumdes" {printf("double");}
 "borno" {return CHAR;}
-
 "speak" {return PRINT;}
 "obtain" {	
 			scanf("%d", &v);
@@ -47,8 +45,6 @@ int v;
 		}
 "loopfor" {return FOR;}
 "loop" {return WHILE;}
-"start" {printf("do");}
-"while" {printf("while");}
 "$$" {return GT;}
 "%%" {return LT;}
 "=" {return EQU;}
@@ -59,13 +55,10 @@ int v;
 ">" {return RAB;}
 "nil"   {printf("void");}
 
-openthis {printf("freopen");}
-closethis {printf("fclose");}
-"(+)"  {printf("&&");}
+"func"	{return FUNC;}
+"call"	{return CALL;}
 
-go {printf("continue");}
-ber_ho {printf("break");}
-fixed {printf("static");}
+
 add {return ADD;}
 sub {return SUB;}
 mul {return MUL;}
@@ -98,19 +91,11 @@ lastly {return ELSE;}
 
 
 "root" {return ROOT;}
-"power" {printf("pow");}
-"$" {printf("&");}
-
-
 "|" {return END;}
-"~" {printf("!");}
 ","	{return COMMA;}
-
-"sw" {printf("switch");}
-"ca" {printf("case");}
-"def" {printf("Default");} 
-
-"udclass" {printf("struct");}
+"sw" {return SWITCH;}
+"ca" {return CASE;}
+"def" {return DEFAULT;} 
 
 . 	
 %%

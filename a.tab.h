@@ -60,16 +60,24 @@
      WHILE = 276,
      FOR = 277,
      STMNT1 = 278,
-     DIV = 279,
-     MUL = 280,
-     SUB = 281,
-     ADD = 282,
-     FL = 283,
-     ROOT = 284,
-     NUM = 285,
-     ID = 286,
-     CHAR = 287,
-     END = 288
+     SWITCH = 279,
+     CASE = 280,
+     DEFAULT = 281,
+     MAIN = 282,
+     FUNC = 283,
+     INCLUDE = 284,
+     CALL = 285,
+     DIV = 286,
+     MUL = 287,
+     SUB = 288,
+     ADD = 289,
+     FL = 290,
+     ROOT = 291,
+     NUM = 292,
+     ID = 293,
+     CHAR = 294,
+     CHAR1 = 295,
+     END = 296
    };
 #endif
 
@@ -80,7 +88,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 64 "a.y"
+#line 67 "a.y"
 
         int number;
         char *string;
@@ -102,7 +110,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 106 "a.tab.h"
+#line 114 "a.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
