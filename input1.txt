@@ -1,0 +1,74 @@
+
+#import<stdio.h>
+number main 
+[
+number var_d , var_e , var_a |
+numdes var_bb, var_b |
+borno var_c |
+
+var_c @ :ABRAR: |
+
+speak<var_c> |
+
+var_b @ 12 mul 10.1 |
+var_a @ 11 |
+jodi < 3 %% 2 >
+[
+
+		speak<var_b>|
+		speak<var_a>|
+]
+nahole< 3 %% 1 >
+[
+		speak<var_b>|
+		speak<var_a>|
+		
+]
+lastly
+[
+	var_a @ 10 |
+	speak<var_a>|
+	speak<var_b>|
+]
+
+loopfor < var_a @ 0 | var_a $$ 4 | var_a add 1 >
+[
+	speak<var_a>|
+]
+
+loop<3>
+[
+	speak<var_a>|
+]
+
+speak<var_a>|
+speak<var_b>|
+sw < 10 >
+ca <10>
+[
+	var_a @ 10 mul 44 add 1 |
+]
+ca < 20 >
+[
+	
+	var_a @ 6 |
+]
+def
+[
+	var_a @ 0 |
+]
+speak<var_a>|
+
+number func var_funcA <>
+[
+	var_a @ 24|	
+]
+number func var_funcB <>
+[
+	speak<var_b>|
+]
+
+call <var_funcA>|
+call<var_funcB>|
+speak<var_a>|
+]
